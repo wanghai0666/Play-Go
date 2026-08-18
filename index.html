@@ -4,36 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>围棋 · 清石</title>
-    <style>
+        <style>
         * {
             box-sizing: border-box;
             user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            height: 100vh;
+            overflow: hidden;
         }
         body {
             background: #2b5d3b;
             background: radial-gradient(circle at 20% 30%, #3f8654, #1e4a2f);
-            min-height: 100vh;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
+            padding: 4px;
             transition: background 0.2s;
         }
         .go-container {
             background: transparent;
-            padding: 0;
-            border: none;
-            box-shadow: none;
             width: fit-content;
             margin: 0 auto;
+            max-height: 100vh;
         }
         .main-layout {
             display: grid;
             grid-template-columns: 1fr auto;
-            gap: 20px;
-            align-items: center;
+            gap: 8px;
+            align-items: start;
         }
         .board-area {
             display: flex;
@@ -44,11 +46,11 @@
             display: block;
             width: 100%;
             height: auto;
-            max-width: 900px;
+            max-width: min(800px, calc(100vh - 90px));
             aspect-ratio: 1 / 1;
-            border-radius: 24px;
+            border-radius: 16px;
             background: #e5c8a3;
-            box-shadow: inset 0 0 0 2px #9b7e5f, 0 20px 25px rgba(0,0,0,0.6);
+            box-shadow: inset 0 0 0 2px #9b7e5f, 0 12px 20px rgba(0,0,0,0.5);
             cursor: pointer;
             transition: filter 0.1s;
         }
@@ -58,96 +60,96 @@
         .timer-row {
             display: flex;
             justify-content: space-between;
-            gap: 30px;
+            gap: 20px;
             width: 100%;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
+            margin-bottom: 4px;
+            font-size: 1.05rem;
             font-weight: 600;
             color: #2d1f13;
         }
         .timer {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
-            padding: 4px 12px;
-            border-radius: 40px;
+            padding: 2px 10px;
+            border-radius: 30px;
             transition: all 0.2s;
         }
         .timer.black-timer-active {
-            outline: 3px solid #ffd966;
+            outline: 2px solid #ffd966;
             background: rgba(255, 217, 102, 0.15);
         }
         .timer.white-timer-active {
-            outline: 3px solid #ffd966;
+            outline: 2px solid #ffd966;
             background: rgba(255, 217, 102, 0.15);
         }
         .timer span {
             background: #f0e0d0;
-            padding: 4px 15px;
-            border-radius: 40px;
+            padding: 3px 12px;
+            border-radius: 30px;
             color: #3d2b1b;
-            font-size: 1.3rem;
+            font-size: 1rem;
             font-weight: 600;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
         .stats {
             display: flex;
-            gap: 25px;
-            font-size: 1.3rem;
+            gap: 18px;
+            font-size: 1rem;
             color: #2d1f13;
             text-shadow: 0 1px 0 #eeddbb;
-            margin-top: 15px;
+            margin-top: 4px;
         }
         .stats div {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
         }
         .stats span {
             background: #f0e0d0;
-            padding: 4px 12px;
-            border-radius: 30px;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-weight: 700;
             color: #3d2b1b;
-            min-width: 45px;
+            min-width: 38px;
             text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
         .button-group-vertical {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            min-width: 90px; /* 稍微加宽以适应中文 */
+            gap: 5px;
+            min-width: 80px;
+            padding-top: 2px;
         }
         .go-button {
             background: #efe0c9;
             border: none;
-            padding: 6px 0;
-            font-size: 0.9rem;
+            padding: 5px 0;
+            font-size: 0.82rem;
             font-weight: bold;
-            border-radius: 30px;
+            border-radius: 20px;
             color: #3d2b1b;
-            box-shadow: 0 3px 0 #7a5f45, 0 4px 6px black;
+            box-shadow: 0 2px 0 #7a5f45, 0 3px 5px rgba(0,0,0,0.4);
             cursor: pointer;
             transition: 0.07s linear;
             border: 1px solid #ffefd1;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             width: 100%;
             text-align: center;
             white-space: normal;
-            line-height: 1.2;
+            line-height: 1.15;
             word-break: keep-all;
         }
         .go-button:hover {
             background: #f5ead7;
         }
         .go-button:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #7a5f45, 0 4px 6px black;
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #7a5f45, 0 2px 4px rgba(0,0,0,0.3);
         }
-        /* 隐藏的原生文件上传按钮 + 颜色选择器 */
         #importFileInput,
         #boardColorPicker,
         #bgColorPicker {
@@ -163,7 +165,7 @@
                 <div class="timer" id="blackTimerDisplay">⚫ <span>30:00</span></div>
                 <div class="timer" id="whiteTimerDisplay">⚪ <span>30:00</span></div>
             </div>
-            <canvas id="goBoard" width="900" height="900"></canvas>
+            <canvas id="goBoard" width="800" height="800"></canvas>
             <div class="stats">
                 <div>⚫ <span id="blackCaptures">0</span></div>
                 <div>⚪ <span id="whiteCaptures">0</span></div>
@@ -306,7 +308,7 @@
     const BLACK = 1;
     const WHITE = 2;
     const MARGIN = 55;
-    const CANVAS_SIZE = 900;
+    const CANVAS_SIZE = 800;
     const INIT_TIME = 1800;
 
     // ----- 全局状态 -----
